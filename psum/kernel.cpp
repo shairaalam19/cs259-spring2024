@@ -3,6 +3,12 @@
 #include <vx_spawn.h>
 #include "common.h"
 
+/**
+ * @brief 
+ * 
+ * @param task_id thread ID to go to a specific partition 
+ * @param arg 
+ */
 void kernel_body(int task_id, kernel_arg_t* __UNIFORM__ arg) {
 	uint32_t num_points = arg->num_points;
 	auto src_ptr = (TYPE*)arg->src_addr;
@@ -11,15 +17,21 @@ void kernel_body(int task_id, kernel_arg_t* __UNIFORM__ arg) {
 	auto ref_value = src_ptr[task_id];
 
 	uint32_t pos = 0;
-	for (uint32_t i = 0; i < num_points; ++i) {
+	// loops through every num_points (partition) and adds all elements 
+	for (uint32_t i = 0; i < num_points; ++i) { 
 		auto cur_value = src_ptr[i];		
 		pos += (cur_value < ref_value) || ((cur_value == ref_value) && (i < task_id));
 	}
 	dst_ptr[pos] = ref_value;
 }
 
-int main() {
-	kernel_arg_t* arg = (kernel_arg_t*)KERNEL_ARG_DEV_MEM_ADDR;
-	vx_spawn_tasks(arg->num_points, (vx_spawn_tasks_cb)kernel_body, arg);
+int main() { // executed by hardware thread 
+	kernel_arg_t* arg = (kernel_arg_t*)KERNEL_ARG_DEV_MEM_ADDR; // loads arguments from KERNEL_ARG_DEV_MEM_ADDR
+
+	/** Spawns the tasks: 
+	 * arg->num_tasks is the number of logical threads (thread blocks * block size). 
+	 * Arg becomes the argument “arg” for kernel_body.
+	**/
+	vx_spawn_tasks(arg->num_points, (vx_spawn_tasks_cb)kernel_body, arg); // spawn tasks 
 	return 0;
 }

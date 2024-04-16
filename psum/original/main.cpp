@@ -17,7 +17,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const char* kernel_file = "kernel.bin"; // load kernel binary to GPU 
+const char* kernel_file = "kernel.bin";
 uint32_t count = 0;
 
 std::vector<TYPE> src_data;
@@ -140,11 +140,6 @@ int main(int argc, char *argv[]) {
   std::cout << "open device connection" << std::endl;  
   RT_CHECK(vx_dev_open(&device));
 
-  /**
-   * @brief calculates the num points and buffer size based on num size 
-   * 
-   */
-
   uint32_t num_points = count;
 
   // generate input data
@@ -158,29 +153,6 @@ int main(int argc, char *argv[]) {
 
   std::cout << "number of points: " << num_points << std::endl;
   std::cout << "buffer size: " << dst_buf_size << " bytes" << std::endl;
-
-
-  // ------------------------- NEW 
-
-  /**
-   * @brief use tests/regression/demo to calculate buffer size using cores, warps, and threads size 
-   * 
-   */
-
-  uint64_t num_cores, num_warps, num_threads;
-  RT_CHECK(vx_dev_caps(device, VX_CAPS_NUM_CORES, &num_cores)); // # of cores
-  RT_CHECK(vx_dev_caps(device, VX_CAPS_NUM_WARPS, &num_warps)); // # of warps 
-  RT_CHECK(vx_dev_caps(device, VX_CAPS_NUM_THREADS, &num_threads)); // # of threads  
-
-  uint32_t num_tasks  = num_cores * num_warps * num_threads; // should be # of logical threads = hardware threads (passed in common.h) ??? --> do we just set num_tasks = num_threads? 
-  uint32_t num_points = count * num_tasks; // size of partition (passed in common.h)
-  uint32_t buf_size   = num_points * sizeof(TYPE); // buffer size = # of points * data type size (aka destination buffer size) 
-
-  std::cout << "data type: " << Comparator<TYPE>::type_str() << std::endl;
-  std::cout << "number of points: " << num_points << std::endl;
-  std::cout << "buffer size: " << buf_size << " bytes" << std::endl;
-
-  // -------------------------
 
   // upload program
   std::cout << "upload program" << std::endl;  
@@ -207,8 +179,8 @@ int main(int argc, char *argv[]) {
   
   // upload kernel argument  
   std::cout << "upload kernel argument" << std::endl;
-  memcpy(staging_buf.data(), &kernel_arg, sizeof(kernel_arg_t)); // upload into GPU 
-  RT_CHECK(vx_copy_to_dev(device, KERNEL_ARG_DEV_MEM_ADDR, staging_buf.data(), sizeof(kernel_arg_t))); // determine based on location and access it 
+  memcpy(staging_buf.data(), &kernel_arg, sizeof(kernel_arg_t));
+  RT_CHECK(vx_copy_to_dev(device, KERNEL_ARG_DEV_MEM_ADDR, staging_buf.data(), sizeof(kernel_arg_t)));
   
   // upload source buffer
   {
