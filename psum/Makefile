@@ -1,9 +1,9 @@
-PROJECT = psum
+PROJECT = psum 
 
 SRCS = main.cpp
 
 VX_SRCS = kernel.cpp
 
-OPTS ?= -n16
+OPTS ?= -n32
 
 include ../common.mk

@@ -1,3 +1,2 @@
 main.o: main.cpp \
- /mnt/c/Users/User/cs259-spring2024/vortex/runtime/include/vortex.h \
- common.h
+ /home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/include/vortex.h common.h
