@@ -1,0 +1,8 @@
+Running Commands:
+
+./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 >> log1.txt
+(Input Size: n=32)
+
+./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 >> log2.txt
+(Input Size: n=16)
+
