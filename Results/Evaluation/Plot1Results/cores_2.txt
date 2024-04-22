@@ -1,0 +1,60 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=2 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=2 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/rtlsim: ./psum  -n16384
+Total number of points in input: 16384
+Source buffer size: 65536 bytes
+open device connection
+Device configuration [cores, warps, threads]: 2, 4, 4
+Total number of points in output: 32
+Destination buffer size: 128 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0x10040
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: core0: scheduler idle=139476 (89%)
+PERF: core0: scheduler stalls=5 (0%)
+PERF: core0: ibuffer stalls=47549 (30%)
+PERF: core0: issue stalls=74412 (alu=5%, fpu=0%, lsu=94%, sfu=0%)
+PERF: core0: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core0: ifetches=16680
+PERF: core0: ifetch latency=22 cycles
+PERF: core0: loads=8378
+PERF: core0: load latency=38 cycles
+PERF: core0: stores=1214
+PERF: core0: instrs=61070, cycles=156070, IPC=0.391299
+PERF: core1: scheduler idle=139476 (89%)
+PERF: core1: scheduler stalls=7 (0%)
+PERF: core1: ibuffer stalls=51084 (32%)
+PERF: core1: issue stalls=77953 (alu=9%, fpu=0%, lsu=90%, sfu=0%)
+PERF: core1: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core1: ifetches=16682
+PERF: core1: ifetch latency=23 cycles
+PERF: core1: loads=8378
+PERF: core1: load latency=37 cycles
+PERF: core1: stores=1214
+PERF: core1: instrs=61072, cycles=156072, IPC=0.391307
+PERF: scheduler idle=278952 (89%)
+PERF: scheduler stalls=12 (0%)
+PERF: ibuffer stalls=98633 (31%)
+PERF: issue stalls=152365 (alu=7%, fpu=0%, lsu=92%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=33362
+PERF: loads=16756
+PERF: stores=2428
+PERF: ifetch latency=23 cycles
+PERF: load latency=38 cycles
+PERF: instrs=122142, cycles=156072, IPC=0.782600
+PASSED!
+make: Leaving directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'

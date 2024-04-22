@@ -1,0 +1,126 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=8 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=8 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/rtlsim: ./psum  -n16384
+Total number of points in input: 16384
+Source buffer size: 65536 bytes
+open device connection
+Device configuration [cores, warps, threads]: 8, 4, 4
+Total number of points in output: 128
+Destination buffer size: 512 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0x10040
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: core0: scheduler idle=67840 (91%)
+PERF: core0: scheduler stalls=21779 (29%)
+PERF: core0: ibuffer stalls=8254 (11%)
+PERF: core0: issue stalls=30612 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core0: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core0: ifetches=5925
+PERF: core0: ifetch latency=14 cycles
+PERF: core0: loads=2234
+PERF: core0: load latency=53 cycles
+PERF: core0: stores=1214
+PERF: core0: instrs=18059, cycles=73756, IPC=0.244848
+PERF: core1: scheduler idle=67926 (92%)
+PERF: core1: scheduler stalls=23269 (31%)
+PERF: core1: ibuffer stalls=7215 (9%)
+PERF: core1: issue stalls=32686 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core1: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core1: ifetches=5925
+PERF: core1: ifetch latency=14 cycles
+PERF: core1: loads=2234
+PERF: core1: load latency=65 cycles
+PERF: core1: stores=1214
+PERF: core1: instrs=18059, cycles=73798, IPC=0.244709
+PERF: core2: scheduler idle=67938 (92%)
+PERF: core2: scheduler stalls=22718 (30%)
+PERF: core2: ibuffer stalls=8144 (11%)
+PERF: core2: issue stalls=31575 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core2: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core2: ifetches=5925
+PERF: core2: ifetch latency=14 cycles
+PERF: core2: loads=2234
+PERF: core2: load latency=59 cycles
+PERF: core2: stores=1214
+PERF: core2: instrs=18059, cycles=73784, IPC=0.244755
+PERF: core3: scheduler idle=67838 (91%)
+PERF: core3: scheduler stalls=25234 (34%)
+PERF: core3: ibuffer stalls=5472 (7%)
+PERF: core3: issue stalls=27747 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core3: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core3: ifetches=5928
+PERF: core3: ifetch latency=13 cycles
+PERF: core3: loads=2234
+PERF: core3: load latency=61 cycles
+PERF: core3: stores=1214
+PERF: core3: instrs=18062, cycles=73754, IPC=0.244895
+PERF: core4: scheduler idle=67914 (92%)
+PERF: core4: scheduler stalls=24201 (32%)
+PERF: core4: ibuffer stalls=7054 (9%)
+PERF: core4: issue stalls=33966 (alu=1%, fpu=0%, lsu=98%, sfu=0%)
+PERF: core4: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core4: ifetches=5886
+PERF: core4: ifetch latency=14 cycles
+PERF: core4: loads=2225
+PERF: core4: load latency=65 cycles
+PERF: core4: stores=1210
+PERF: core4: instrs=18020, cycles=73751, IPC=0.244336
+PERF: core5: scheduler idle=67961 (92%)
+PERF: core5: scheduler stalls=25223 (34%)
+PERF: core5: ibuffer stalls=6127 (8%)
+PERF: core5: issue stalls=35075 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core5: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core5: ifetches=5886
+PERF: core5: ifetch latency=13 cycles
+PERF: core5: loads=2225
+PERF: core5: load latency=65 cycles
+PERF: core5: stores=1210
+PERF: core5: instrs=18020, cycles=73801, IPC=0.244170
+PERF: core6: scheduler idle=67270 (91%)
+PERF: core6: scheduler stalls=26438 (35%)
+PERF: core6: ibuffer stalls=4929 (6%)
+PERF: core6: issue stalls=26267 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core6: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core6: ifetches=5889
+PERF: core6: ifetch latency=13 cycles
+PERF: core6: loads=2225
+PERF: core6: load latency=58 cycles
+PERF: core6: stores=1210
+PERF: core6: instrs=18023, cycles=73741, IPC=0.244409
+PERF: core7: scheduler idle=67637 (91%)
+PERF: core7: scheduler stalls=20856 (28%)
+PERF: core7: ibuffer stalls=10506 (14%)
+PERF: core7: issue stalls=32797 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: core7: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core7: ifetches=5891
+PERF: core7: ifetch latency=15 cycles
+PERF: core7: loads=2225
+PERF: core7: load latency=58 cycles
+PERF: core7: stores=1210
+PERF: core7: instrs=18025, cycles=73739, IPC=0.244443
+PERF: scheduler idle=542324 (91%)
+PERF: scheduler stalls=189718 (32%)
+PERF: ibuffer stalls=57701 (9%)
+PERF: issue stalls=250725 (alu=2%, fpu=0%, lsu=97%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=47255
+PERF: loads=17836
+PERF: stores=9696
+PERF: ifetch latency=14 cycles
+PERF: load latency=60 cycles
+PERF: instrs=144327, cycles=73801, IPC=1.955624
+PASSED!
+make: Leaving directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
