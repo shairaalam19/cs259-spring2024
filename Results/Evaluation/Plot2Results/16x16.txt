@@ -1,0 +1,41 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16   -DPERF_ENABLE -DISSUE_WIDTH=4
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16   -DPERF_ENABLE -DISSUE_WIDTH=4 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/mnt/c/Users/User/cs259-spring2024/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/mnt/c/Users/User/cs259-spring2024/vortex/runtime/rtlsim: ./psum  -n16384
+Total number of points in input: 16384
+Input Data
+num_points=16384
+Source buffer size: 65536 bytes
+open device connection
+Device configuration [cores, warps, threads]: 1, 16, 16
+Total number of points in output: 256
+Reference Data
+Destination buffer size: 1024 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0x10040
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: scheduler idle=26280 (36%)
+PERF: scheduler stalls=35631 (49%)
+PERF: ibuffer stalls=31019 (42%)
+PERF: issue stalls=127810 (alu=18%, fpu=0%, lsu=81%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=11541
+PERF: loads=18790
+PERF: stores=3286
+PERF: ifetch latency=15 cycles
+PERF: load latency=23 cycles
+PERF: instrs=146927, cycles=72521, IPC=2.025992
+PASSED!
+make: Leaving directory '/mnt/c/Users/User/cs259-spring2024/vortex/tests/regression/psum'
