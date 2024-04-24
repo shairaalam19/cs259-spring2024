@@ -27,6 +27,9 @@ interface VX_pipeline_perf_if ();
     wire [`PERF_CTR_BITS-1:0] ifetch_latency;
     wire [`PERF_CTR_BITS-1:0] load_latency;
 
+    wire [`PERF_CTR_BITS-1:0] active_warps;
+    wire [`PERF_CTR_BITS-1:0] stalled_warps;
+
     modport schedule (
         output sched_idles,
         output sched_stalls        
@@ -50,7 +53,9 @@ interface VX_pipeline_perf_if ();
         input loads,
         input stores,
         input ifetch_latency,
-        input load_latency
+        input load_latency,
+        input active_warps,
+        input stalled_warps
     );
 
 endinterface

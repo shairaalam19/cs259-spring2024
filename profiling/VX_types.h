@@ -183,6 +183,7 @@
 #define VX_CSR_WARP_ID                  0xCC1
 #define VX_CSR_CORE_ID                  0xCC2
 #define VX_CSR_WARP_MASK                0xCC3
+#define VX_CSR_STALL_MASK               0xCC3
 #define VX_CSR_THREAD_MASK              0xCC4     // warning! this value is also used in LLVM
 
 #define VX_CSR_NUM_THREADS              0xFC0

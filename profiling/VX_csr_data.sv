@@ -43,6 +43,7 @@ import VX_fpu_pkg::*;
 
     input wire [`PERF_CTR_BITS-1:0]     cycles,
     input wire [`NUM_WARPS-1:0]         active_warps,
+    input wire [`NUM_WARPS-1:0]         stalled_warps,
     input wire [`NUM_WARPS-1:0][`NUM_THREADS-1:0] thread_masks,
 
     input wire                          read_enable,
@@ -155,6 +156,7 @@ import VX_fpu_pkg::*;
             `VX_CSR_CORE_ID    : read_data_ro_r = 32'(CORE_ID);
             `VX_CSR_THREAD_MASK: read_data_ro_r = 32'(thread_masks[read_wid]);
             `VX_CSR_WARP_MASK  : read_data_ro_r = 32'(active_warps);
+            `VX_CSR_STALL_MASK  : read_data_ro_r = 32'(stalled_warps);
             `VX_CSR_NUM_THREADS: read_data_ro_r = 32'(`NUM_THREADS);
             `VX_CSR_NUM_WARPS  : read_data_ro_r = 32'(`NUM_WARPS);
             `VX_CSR_NUM_CORES  : read_data_ro_r = 32'(`NUM_CORES * `NUM_CLUSTERS);           

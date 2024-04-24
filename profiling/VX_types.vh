@@ -178,6 +178,7 @@
 `define VX_CSR_WARP_ID                  12'hCC1
 `define VX_CSR_CORE_ID                  12'hCC2
 `define VX_CSR_WARP_MASK                12'hCC3
+`define VX_CSR_STALL_MASK               12'hCC3
 `define VX_CSR_THREAD_MASK              12'hCC4     // warning! this value is also used in LLVM
 
 `define VX_CSR_NUM_THREADS              12'hFC0
