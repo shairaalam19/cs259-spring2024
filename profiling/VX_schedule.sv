@@ -365,6 +365,7 @@ module VX_schedule import VX_gpu_pkg::*; #(
     // export CSRs
     assign sched_csr_if.cycles = cycles;
     assign sched_csr_if.active_warps = active_warps;
+    assign sched_csr_if.stalled_warps = stalled_warps;
     assign sched_csr_if.thread_masks = thread_masks;
           
    // timeout handling
