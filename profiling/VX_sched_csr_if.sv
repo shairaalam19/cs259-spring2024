@@ -17,6 +17,7 @@ interface VX_sched_csr_if ();
 
     wire [`PERF_CTR_BITS-1:0] cycles;
     wire [`NUM_WARPS-1:0] active_warps;
+    wire [`NUM_WARPS-1:0] stalled_warps;
     wire [`NUM_WARPS-1:0][`NUM_THREADS-1:0] thread_masks;
     wire alm_empty;
     wire [`NW_WIDTH-1:0] alm_empty_wid;
@@ -26,6 +27,7 @@ interface VX_sched_csr_if ();
     modport master (
         output cycles,
         output active_warps,
+        output stalled_warps,
         output thread_masks,
         input  alm_empty_wid,
         output alm_empty,
@@ -36,6 +38,7 @@ interface VX_sched_csr_if ();
     modport slave (
         input  cycles,
         input  active_warps,
+        input  stalled_warps,
         input  thread_masks,
         output alm_empty_wid,
         input  alm_empty,
