@@ -215,6 +215,8 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
   uint64_t stores = 0;
   uint64_t ifetch_lat = 0;
   uint64_t load_lat   = 0;  
+  uint64_t active_warps = 0;
+  uint64_t stalled_warps = 0;  
   // PERF: l2cache 
   uint64_t l2cache_reads = 0;
   uint64_t l2cache_writes = 0;
@@ -268,6 +270,24 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
     switch (perf_class) {
     case VX_DCR_MPM_CLASS_CORE: {
       // PERF: pipeline    
+      // warp efficiency
+      {
+        uint64_t active_warps_per_core = get_csr_64(staging_buf.data(), VX_CSR_WARP_MASK);     
+        uint64_t stalled_warps_per_core = get_csr_64(staging_buf.data(), VX_CSR_STALL_MASK);     
+        if (num_cores > 1) {
+          int active_percent_per_core = calcAvgPercent(active_warps_per_core, cycles_per_core);
+          int stalled_percent_per_core = calcAvgPercent(stalled_warps_per_core, cycles_per_core);
+          fprintf(stream, "PERF: core%d: active warp=%ld (%d%%)\n", core_id, active_warps_per_core, active_percent_per_core);
+          fprintf(stream, "PERF: core%d: stalled warp=%ld (%d%%)\n", core_id, stalled_warps_per_core, stalled_percent_per_core);
+
+          // calculating warp effiency 
+          int warp_efficiency = active_warps_per_core / (active_warps_per_core + stalled_warps_per_core);
+          int efficency_percent_per_core = calcAvgPercent(warp_efficiency, cycles_per_core);
+          fprintf(stream, "PERF: core%d: warp effiency=%ld (%d%%)\n", core_id, warp_efficiency, efficency_percent_per_core);
+        }
+        active_warps += active_warps_per_core;
+        stalled_warps += stalled_warps_per_core;
+      }
       // scheduler idles
       {
         uint64_t sched_idles_per_core = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_ID);        
