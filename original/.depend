@@ -1,0 +1,3 @@
+main.o: main.cpp \
+ /mnt/c/Users/User/cs259-spring2024/vortex/runtime/include/vortex.h \
+ common.h
