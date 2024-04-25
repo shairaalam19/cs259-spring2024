@@ -79,9 +79,11 @@ void gen_input_data(uint32_t num_points) {
 void gen_ref_data(uint32_t num_points) {
   ref_data.resize(num_points);
 
-  int points_per_partition = src_data.size()/num_points;
+  int points_per_partition = src_data.size()/num_points; // could be a 1:1 ratio, or could be > 1 
+  // > 1 means that you have to sum within each partition 
 
   std::cout << "Reference Data" << std::endl;
+  
   // outer loop filling each point of ref data
   for (uint32_t i = 0; i < num_points; ++i) {
     TYPE sum = 0;
@@ -89,8 +91,8 @@ void gen_ref_data(uint32_t num_points) {
     for (uint32_t j = 0; j < points_per_partition; ++j) {
 
       int index = (i*points_per_partition) + j;
-      TYPE curr = src_data.at(index);
-      sum = sum + curr;
+      TYPE curr = src_data.at(index); // value 
+      sum = sum + curr; // summing all values within partition 
 
     }
 
@@ -185,7 +187,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Total number of points in output: " << num_tasks << std::endl;
   // Now using src_data and destination size we can calculate the reference data (ground truth)
-  gen_ref_data(num_tasks);
+  gen_ref_data(num_tasks); 
 
   uint32_t dst_buf_size = ref_data.size() * sizeof(TYPE);
   std::cout << "Destination buffer size: " << dst_buf_size << " bytes" << std::endl;
