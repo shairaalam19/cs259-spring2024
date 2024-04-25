@@ -473,11 +473,17 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
       , calcAvgPercent(scrb_csrs, sfu_total)
       , calcAvgPercent(scrb_wctl, sfu_total)
     );
+
+    uint64_t active_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_AW);
+    uint64_t stalled_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_SW);
+    float warp_efficiency = 1 - (stalled_warp_total/active_warp_total);
+
     fprintf(stream, "PERF: ifetches=%ld\n", ifetches);
     fprintf(stream, "PERF: loads=%ld\n", loads);
     fprintf(stream, "PERF: stores=%ld\n", stores);    
     fprintf(stream, "PERF: ifetch latency=%d cycles\n", ifetch_avg_lat);
-    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);    
+    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);
+    fprintf(stream, "PERF: warp_efficiency=%f\n", warp_efficiency);
   } break;  
   case VX_DCR_MPM_CLASS_MEM: {    
     if (l2cache_enable) {

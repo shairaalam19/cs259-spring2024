@@ -16,6 +16,8 @@
 interface VX_pipeline_perf_if ();
     wire [`PERF_CTR_BITS-1:0] sched_idles;
     wire [`PERF_CTR_BITS-1:0] sched_stalls;
+    wire [`PERF_CTR_BITS-1:0] sched_active_warp_count;
+    wire [`PERF_CTR_BITS-1:0] sched_stalled_warp_count;
     wire [`PERF_CTR_BITS-1:0] ibf_stalls;
     wire [`PERF_CTR_BITS-1:0] scb_stalls;
     wire [`PERF_CTR_BITS-1:0] units_uses [`NUM_EX_UNITS];
@@ -29,7 +31,9 @@ interface VX_pipeline_perf_if ();
 
     modport schedule (
         output sched_idles,
-        output sched_stalls        
+        output sched_stalls,
+        output sched_active_warp_count,
+        output sched_stalled_warp_count 
     );
 
     modport issue (
@@ -42,6 +46,8 @@ interface VX_pipeline_perf_if ();
     modport slave (
         input sched_idles,
         input sched_stalls,
+        input sched_active_warp_count,
+        input sched_stalled_warp_count,
         input ibf_stalls,
         input scb_stalls,
         input units_uses,
