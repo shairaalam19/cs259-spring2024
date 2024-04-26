@@ -406,8 +406,8 @@ module VX_schedule import VX_gpu_pkg::*; #(
         end else begin
             perf_sched_idles  <= perf_sched_idles + `PERF_CTR_BITS'(schedule_idle);
             perf_sched_stalls <= perf_sched_stalls + `PERF_CTR_BITS'(schedule_stall);
-            perf_active_warp_count <= perf_active_warp_count + $countones(active_warps);
-            perf_stalled_warp_count <= perf_stalled_warp_count + $countones(stalled_warps);
+            perf_active_warp_count <= perf_active_warp_count + `PERF_CTR_BITS'($countones(active_warps));
+            perf_stalled_warp_count <= perf_stalled_warp_count + `PERF_CTR_BITS'($countones(stalled_warps));
         end
     end
 

@@ -102,6 +102,11 @@
 `define VX_CSR_MPM_SCRB_WCTL_H          12'hB90
 `define VX_CSR_MPM_SCRB_CSRS            12'hB11
 `define VX_CSR_MPM_SCRB_CSRS_H          12'hB91
+`define VX_CSR_MPM_SCHED_AW				12'hB12
+`define VX_CSR_MPM_SCHED_AW_H			12'hB92
+`define VX_CSR_MPM_SCHED_SW				12'hB13
+`define VX_CSR_MPM_SCHED_SW_H			12'hB93
+
 
 // Machine Performance-monitoring memory counters
 // PERF: icache
