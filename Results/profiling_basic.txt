@@ -1,0 +1,91 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=4
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=4 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/rtlsim: ./psum  -n32
+Total number of points in input: 32
+Input Data
+0: value=28
+1: value=20
+2: value=3
+3: value=31
+4: value=21
+5: value=16
+6: value=0
+7: value=6
+8: value=7
+9: value=6
+10: value=13
+11: value=17
+12: value=0
+13: value=1
+14: value=0
+15: value=29
+16: value=16
+17: value=20
+18: value=2
+19: value=16
+20: value=17
+21: value=4
+22: value=1
+23: value=30
+24: value=12
+25: value=27
+26: value=12
+27: value=21
+28: value=16
+29: value=17
+30: value=21
+31: value=12
+Source buffer size: 128 bytes
+open device connection
+Device configuration [cores, warps, threads]: 1, 4, 4
+Total number of points in output: 16
+Reference Data
+0: value=48
+1: value=34
+2: value=37
+3: value=6
+4: value=13
+5: value=30
+6: value=1
+7: value=29
+8: value=36
+9: value=18
+10: value=21
+11: value=31
+12: value=39
+13: value=33
+14: value=33
+15: value=33
+Destination buffer size: 64 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0xc0
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: scheduler idle=15702 (87%)
+PERF: scheduler stalls=0 (0%)
+PERF: ibuffer stalls=180 (0%)
+PERF: issue stalls=3003 (alu=60%, fpu=0%, lsu=39%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=2401
+PERF: loads=218
+PERF: stores=1214
+PERF: ifetch latency=4 cycles
+PERF: load latency=21 cycles
+PERF: active warp total=24680 
+PERF: stalled warp total=22250 
+PERF: warp_efficiency=0.098460
+PERF: instrs=3951, cycles=18015, IPC=0.219317
+PASSED!
+make: Leaving directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
