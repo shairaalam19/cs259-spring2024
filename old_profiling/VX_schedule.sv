@@ -365,6 +365,7 @@ module VX_schedule import VX_gpu_pkg::*; #(
     // export CSRs
     assign sched_csr_if.cycles = cycles;
     assign sched_csr_if.active_warps = active_warps;
+    assign sched_csr_if.stalled_warps = stalled_warps;
     assign sched_csr_if.thread_masks = thread_masks;
           
    // timeout handling
@@ -390,9 +391,8 @@ module VX_schedule import VX_gpu_pkg::*; #(
 `ifdef PERF_ENABLE    
     reg [`PERF_CTR_BITS-1:0] perf_sched_idles;
     reg [`PERF_CTR_BITS-1:0] perf_sched_stalls;
-
-    reg [`PERF_CTR_BITS-1:0] perf_active_warp_count;
-    reg [`PERF_CTR_BITS-1:0] perf_stalled_warp_count;
+    reg [`PERF_CTR_BITS-1:0] active_warps_count;
+    reg [`PERF_CTR_BITS-1:0] stalled_warps_count;
 
     wire schedule_idle = ~schedule_valid;
     wire schedule_stall = schedule_if.valid && ~schedule_if.ready;
@@ -401,21 +401,18 @@ module VX_schedule import VX_gpu_pkg::*; #(
         if (reset) begin
             perf_sched_idles  <= '0;
             perf_sched_stalls <= '0;
-            perf_active_warp_count <= '0;
-            perf_stalled_warp_count <= '0;      
+            active_warps_count  <= '0;
+            stalled_warps_count <= '0;            
         end else begin
             perf_sched_idles  <= perf_sched_idles + `PERF_CTR_BITS'(schedule_idle);
             perf_sched_stalls <= perf_sched_stalls + `PERF_CTR_BITS'(schedule_stall);
-            perf_active_warp_count <= perf_active_warp_count + `PERF_CTR_BITS'($countones(active_warps));
-            perf_stalled_warp_count <= perf_stalled_warp_count + `PERF_CTR_BITS'($countones(stalled_warps));
+            active_warps_count  <= active_warps_count + $countones(active_warps)
+            stalled_warps_count <= stalled_warps_count + $countones(stalled_warps)
         end
     end
 
     assign perf_schedule_if.sched_idles = perf_sched_idles;
-    assign perf_schedule_if.sched_stalls = perf_sched_stalls;
-    assign perf_schedule_if.sched_active_warp_count =  perf_active_warp_count;
-    assign perf_schedule_if.sched_stalled_warp_count =  perf_stalled_warp_count;
-
+    assign perf_schedule_if.sched_stalls = perf_sched_stalls;    
 `endif
 
 endmodule

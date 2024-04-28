@@ -215,6 +215,8 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
   uint64_t stores = 0;
   uint64_t ifetch_lat = 0;
   uint64_t load_lat   = 0;  
+  uint64_t active_warps = 0;
+  uint64_t stalled_warps = 0;  
   // PERF: l2cache 
   uint64_t l2cache_reads = 0;
   uint64_t l2cache_writes = 0;
@@ -268,6 +270,24 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
     switch (perf_class) {
     case VX_DCR_MPM_CLASS_CORE: {
       // PERF: pipeline    
+      // warp efficiency
+      {
+        uint64_t active_warps_per_core = get_csr_64(staging_buf.data(), VX_CSR_WARP_MASK);     
+        uint64_t stalled_warps_per_core = get_csr_64(staging_buf.data(), VX_CSR_STALL_MASK);     
+        if (num_cores > 1) {8
+          int active_percent_per_core = calcAvgPercent(active_warps_per_core, cycles_per_core);
+          int stalled_percent_per_core = calcAvgPercent(stalled_warps_per_core, cycles_per_core);
+          fprintf(stream, "PERF: core%d: active warp=%ld (%d%%)\n", core_id, active_warps_per_core, active_percent_per_core);
+          fprintf(stream, "PERF: core%d: stalled warp=%ld (%d%%)\n", core_id, stalled_warps_per_core, stalled_percent_per_core);
+
+          // calculating warp effiency 
+          int warp_efficiency = active_warps_per_core / (active_warps_per_core + stalled_warps_per_core);
+          int efficency_percent_per_core = calcAvgPercent(warp_efficiency, cycles_per_core);
+          fprintf(stream, "PERF: core%d: warp effiency=%ld (%d%%)\n", core_id, warp_efficiency, efficency_percent_per_core);
+        }
+        active_warps += active_warps_per_core;
+        stalled_warps += stalled_warps_per_core;
+      }
       // scheduler idles
       {
         uint64_t sched_idles_per_core = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_ID);        
@@ -473,19 +493,11 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
       , calcAvgPercent(scrb_csrs, sfu_total)
       , calcAvgPercent(scrb_wctl, sfu_total)
     );
-
-    uint64_t active_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_AW);
-    uint64_t stalled_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_SW);
-    float warp_efficiency = 1 - (static_cast<float>(stalled_warp_total)/active_warp_total);
-
     fprintf(stream, "PERF: ifetches=%ld\n", ifetches);
     fprintf(stream, "PERF: loads=%ld\n", loads);
     fprintf(stream, "PERF: stores=%ld\n", stores);    
     fprintf(stream, "PERF: ifetch latency=%d cycles\n", ifetch_avg_lat);
-    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);
-    fprintf(stream, "PERF: active warp total=%ld \n", active_warp_total);
-    fprintf(stream, "PERF: stalled warp total=%ld \n", stalled_warp_total);
-    fprintf(stream, "PERF: warp_efficiency=%f\n", warp_efficiency);
+    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);    
   } break;  
   case VX_DCR_MPM_CLASS_MEM: {    
     if (l2cache_enable) {

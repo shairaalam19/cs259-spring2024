@@ -1,0 +1,218 @@
+diff --git a/hw/rtl/VX_types.vh b/hw/rtl/VX_types.vh
+index 9e875d21..d04aeb5c 100644
+--- a/hw/rtl/VX_types.vh
++++ b/hw/rtl/VX_types.vh
+@@ -102,6 +102,11 @@
+ `define VX_CSR_MPM_SCRB_WCTL_H          12'hB90
+ `define VX_CSR_MPM_SCRB_CSRS            12'hB11
+ `define VX_CSR_MPM_SCRB_CSRS_H          12'hB91
++`define VX_CSR_MPM_SCHED_AW				12'hB12
++`define VX_CSR_MPM_SCHED_AW_H			12'hB92
++`define VX_CSR_MPM_SCHED_SW				12'hB13
++`define VX_CSR_MPM_SCHED_SW_H			12'hB93
++
+ 
+ // Machine Performance-monitoring memory counters
+ // PERF: icache
+diff --git a/hw/rtl/core/VX_csr_data.sv b/hw/rtl/core/VX_csr_data.sv
+index b1e68437..f40968a6 100644
+--- a/hw/rtl/core/VX_csr_data.sv
++++ b/hw/rtl/core/VX_csr_data.sv
+@@ -190,6 +190,10 @@ import VX_fpu_pkg::*;
+                         `VX_CSR_MPM_SCHED_ID_H      : read_data_ro_r = 32'(pipeline_perf_if.sched_idles[`PERF_CTR_BITS-1:32]);
+                         `VX_CSR_MPM_SCHED_ST        : read_data_ro_r = pipeline_perf_if.sched_stalls[31:0];
+                         `VX_CSR_MPM_SCHED_ST_H      : read_data_ro_r = 32'(pipeline_perf_if.sched_stalls[`PERF_CTR_BITS-1:32]);
++                        `VX_CSR_MPM_SCHED_AW        : read_data_ro_r = pipeline_perf_if.sched_active_warp_count[31:0];
++                        `VX_CSR_MPM_SCHED_AW_H      : read_data_ro_r = 32'(pipeline_perf_if.sched_active_warp_count[`PERF_CTR_BITS-1:32]);
++                        `VX_CSR_MPM_SCHED_SW        : read_data_ro_r = pipeline_perf_if.sched_stalled_warp_count[31:0];
++                        `VX_CSR_MPM_SCHED_SW_H      : read_data_ro_r = 32'(pipeline_perf_if.sched_stalled_warp_count[`PERF_CTR_BITS-1:32]);
+                         `VX_CSR_MPM_IBUF_ST         : read_data_ro_r = pipeline_perf_if.ibf_stalls[31:0];
+                         `VX_CSR_MPM_IBUF_ST_H       : read_data_ro_r = 32'(pipeline_perf_if.ibf_stalls[`PERF_CTR_BITS-1:32]);
+                         `VX_CSR_MPM_SCRB_ST         : read_data_ro_r = pipeline_perf_if.scb_stalls[31:0];
+diff --git a/hw/rtl/core/VX_schedule.sv b/hw/rtl/core/VX_schedule.sv
+index 36bdf9e0..70b7fb17 100644
+--- a/hw/rtl/core/VX_schedule.sv
++++ b/hw/rtl/core/VX_schedule.sv
+@@ -391,21 +391,31 @@ module VX_schedule import VX_gpu_pkg::*; #(
+     reg [`PERF_CTR_BITS-1:0] perf_sched_idles;
+     reg [`PERF_CTR_BITS-1:0] perf_sched_stalls;
+ 
++    reg [`PERF_CTR_BITS-1:0] perf_active_warp_count;
++    reg [`PERF_CTR_BITS-1:0] perf_stalled_warp_count;
++
+     wire schedule_idle = ~schedule_valid;
+     wire schedule_stall = schedule_if.valid && ~schedule_if.ready;
+ 
+     always @(posedge clk) begin
+         if (reset) begin
+             perf_sched_idles  <= '0;
+-            perf_sched_stalls <= '0;            
++            perf_sched_stalls <= '0;
++            perf_active_warp_count <= '0;
++            perf_stalled_warp_count <= '0;      
+         end else begin
+             perf_sched_idles  <= perf_sched_idles + `PERF_CTR_BITS'(schedule_idle);
+             perf_sched_stalls <= perf_sched_stalls + `PERF_CTR_BITS'(schedule_stall);
++            perf_active_warp_count <= perf_active_warp_count + `PERF_CTR_BITS'($countones(active_warps));
++            perf_stalled_warp_count <= perf_stalled_warp_count + `PERF_CTR_BITS'($countones(stalled_warps));
+         end
+     end
+ 
+     assign perf_schedule_if.sched_idles = perf_sched_idles;
+-    assign perf_schedule_if.sched_stalls = perf_sched_stalls;    
++    assign perf_schedule_if.sched_stalls = perf_sched_stalls;
++    assign perf_schedule_if.sched_active_warp_count =  perf_active_warp_count;
++    assign perf_schedule_if.sched_stalled_warp_count =  perf_stalled_warp_count;
++
+ `endif
+ 
+ endmodule
+diff --git a/hw/rtl/interfaces/VX_pipeline_perf_if.sv b/hw/rtl/interfaces/VX_pipeline_perf_if.sv
+index 7d421875..eae2f7ea 100644
+--- a/hw/rtl/interfaces/VX_pipeline_perf_if.sv
++++ b/hw/rtl/interfaces/VX_pipeline_perf_if.sv
+@@ -16,6 +16,8 @@
+ interface VX_pipeline_perf_if ();
+     wire [`PERF_CTR_BITS-1:0] sched_idles;
+     wire [`PERF_CTR_BITS-1:0] sched_stalls;
++    wire [`PERF_CTR_BITS-1:0] sched_active_warp_count;
++    wire [`PERF_CTR_BITS-1:0] sched_stalled_warp_count;
+     wire [`PERF_CTR_BITS-1:0] ibf_stalls;
+     wire [`PERF_CTR_BITS-1:0] scb_stalls;
+     wire [`PERF_CTR_BITS-1:0] units_uses [`NUM_EX_UNITS];
+@@ -29,7 +31,9 @@ interface VX_pipeline_perf_if ();
+ 
+     modport schedule (
+         output sched_idles,
+-        output sched_stalls        
++        output sched_stalls,
++        output sched_active_warp_count,
++        output sched_stalled_warp_count 
+     );
+ 
+     modport issue (
+@@ -42,6 +46,8 @@ interface VX_pipeline_perf_if ();
+     modport slave (
+         input sched_idles,
+         input sched_stalls,
++        input sched_active_warp_count,
++        input sched_stalled_warp_count,
+         input ibf_stalls,
+         input scb_stalls,
+         input units_uses,
+diff --git a/runtime/common/utils.cpp b/runtime/common/utils.cpp
+index 6d601555..c4a82325 100644
+--- a/runtime/common/utils.cpp
++++ b/runtime/common/utils.cpp
+@@ -473,11 +473,19 @@ extern int vx_dump_perf(vx_device_h hdevice, FILE* stream) {
+       , calcAvgPercent(scrb_csrs, sfu_total)
+       , calcAvgPercent(scrb_wctl, sfu_total)
+     );
++
++    uint64_t active_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_AW);
++    uint64_t stalled_warp_total = get_csr_64(staging_buf.data(), VX_CSR_MPM_SCHED_SW);
++    float warp_efficiency = 1 - (static_cast<float>(stalled_warp_total)/active_warp_total);
++
+     fprintf(stream, "PERF: ifetches=%ld\n", ifetches);
+     fprintf(stream, "PERF: loads=%ld\n", loads);
+     fprintf(stream, "PERF: stores=%ld\n", stores);    
+     fprintf(stream, "PERF: ifetch latency=%d cycles\n", ifetch_avg_lat);
+-    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);    
++    fprintf(stream, "PERF: load latency=%d cycles\n", load_avg_lat);
++    fprintf(stream, "PERF: active warp total=%ld \n", active_warp_total);
++    fprintf(stream, "PERF: stalled warp total=%ld \n", stalled_warp_total);
++    fprintf(stream, "PERF: warp_efficiency=%f\n", warp_efficiency);
+   } break;  
+   case VX_DCR_MPM_CLASS_MEM: {    
+     if (l2cache_enable) {
+diff --git a/runtime/rtlsim/librtlsim.so b/runtime/rtlsim/librtlsim.so
+index ed832db4..1d8cf8c7 100644
+Binary files a/runtime/rtlsim/librtlsim.so and b/runtime/rtlsim/librtlsim.so differ
+diff --git a/runtime/rtlsim/libvortex.so b/runtime/rtlsim/libvortex.so
+index ef86b571..57ba2d1a 100644
+Binary files a/runtime/rtlsim/libvortex.so and b/runtime/rtlsim/libvortex.so differ
+diff --git a/tests/regression/Makefile b/tests/regression/Makefile
+index d44c82c4..ca3eaca8 100644
+--- a/tests/regression/Makefile
++++ b/tests/regression/Makefile
+@@ -12,6 +12,7 @@ all:
+ 	$(MAKE) -C no_smem
+ 	$(MAKE) -C vecaddx
+ 	$(MAKE) -C sgemmx
++	$(MAKE) -C psum
+ 
+ run-simx:
+ 	$(MAKE) -C basic run-simx
+@@ -27,6 +28,7 @@ run-simx:
+ 	$(MAKE) -C no_smem run-simx
+ 	$(MAKE) -C vecaddx run-simx
+ 	$(MAKE) -C sgemmx run-simx
++	$(MAKE) -C psum run-simx
+ 
+ run-rtlsim:
+ 	$(MAKE) -C basic run-rtlsim
+@@ -42,6 +44,7 @@ run-rtlsim:
+ 	$(MAKE) -C no_smem run-rtlsim
+ 	$(MAKE) -C vecaddx run-rtlsim
+ 	$(MAKE) -C sgemmx run-rtlsim
++	$(MAKE) -C psum run-rtlsim
+ 
+ run-opae:
+ 	$(MAKE) -C basic run-opae
+@@ -57,6 +60,7 @@ run-opae:
+ 	$(MAKE) -C no_smem run-opae
+ 	$(MAKE) -C vecaddx run-opae
+ 	$(MAKE) -C sgemmx run-opae
++	$(MAKE) -C psum run-opae
+ 
+ clean:
+ 	$(MAKE) -C basic clean
+@@ -72,6 +76,7 @@ clean:
+ 	$(MAKE) -C no_smem clean
+ 	$(MAKE) -C vecaddx clean
+ 	$(MAKE) -C sgemmx clean
++	$(MAKE) -C psum clean
+ 
+ clean-all:
+ 	$(MAKE) -C basic clean-all
+@@ -87,3 +92,4 @@ clean-all:
+ 	$(MAKE) -C no_smem clean-all
+ 	$(MAKE) -C vecaddx clean-all
+ 	$(MAKE) -C sgemmx clean-all
++	$(MAKE) -C psum clean-all
+\ No newline at end of file
+diff --git a/tests/regression/sgemmx/common.h b/tests/regression/sgemmx/common.h
+index 75cfc340..d27cc53a 100644
+--- a/tests/regression/sgemmx/common.h
++++ b/tests/regression/sgemmx/common.h
+@@ -1,7 +1,7 @@
+ #ifndef _COMMON_H_
+ #define _COMMON_H_
+ 
+-#define KERNEL_ARG_DEV_MEM_ADDR 0x7ffff000
++#define KERNEL_ARG_DEV_MEM_ADDR 0x7ffff000 // kernel argument for where it is stored
+ 
+ #ifndef TYPE
+ #define TYPE float
+diff --git a/tests/regression/sgemmx/main.cpp b/tests/regression/sgemmx/main.cpp
+index 23008011..7f730122 100644
+--- a/tests/regression/sgemmx/main.cpp
++++ b/tests/regression/sgemmx/main.cpp
+@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
+ 
+   std::cout << "data type: " << Comparator<TYPE>::type_str() << std::endl;
+   std::cout << "matrix size: " << size << "x" << size << std::endl;
+-  std::cout << "buffer size: " << buf_size << " bytes" << std::endl;
++  std::cout << "buffer  size: " << buf_size << " bytes" << std::endl;
+ 
+   // upload program
+   std::cout << "upload program" << std::endl;  
+diff --git a/tests/regression/sgemmx/sgemmx b/tests/regression/sgemmx/sgemmx
+index 388a40d5..acb5ba30 100644
+Binary files a/tests/regression/sgemmx/sgemmx and b/tests/regression/sgemmx/sgemmx differ
+diff --git a/third_party/ramulator b/third_party/ramulator
+--- a/third_party/ramulator
++++ b/third_party/ramulator
+@@ -1 +1 @@
+-Subproject commit 214f635845214adf030367939655d172ef0fed5f
++Subproject commit 214f635845214adf030367939655d172ef0fed5f-dirty

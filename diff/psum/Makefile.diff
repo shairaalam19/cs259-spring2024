@@ -1,0 +1,18 @@
+diff --git a/psum/Makefile b/psum/Makefile
+index db21321..135dbf8 100644
+--- a/psum/Makefile
++++ b/psum/Makefile
+@@ -1,9 +1,9 @@
+-PROJECT = psum
++PROJECT = psum 
+ 
+ SRCS = main.cpp
+ 
+ VX_SRCS = kernel.cpp
+ 
+-OPTS ?= -n16
++OPTS ?= -n32
+ 
+-include ../common.mk
+\ No newline at end of file
++include ../common.mk

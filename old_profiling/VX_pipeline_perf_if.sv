@@ -16,8 +16,6 @@
 interface VX_pipeline_perf_if ();
     wire [`PERF_CTR_BITS-1:0] sched_idles;
     wire [`PERF_CTR_BITS-1:0] sched_stalls;
-    wire [`PERF_CTR_BITS-1:0] sched_active_warp_count;
-    wire [`PERF_CTR_BITS-1:0] sched_stalled_warp_count;
     wire [`PERF_CTR_BITS-1:0] ibf_stalls;
     wire [`PERF_CTR_BITS-1:0] scb_stalls;
     wire [`PERF_CTR_BITS-1:0] units_uses [`NUM_EX_UNITS];
@@ -29,11 +27,14 @@ interface VX_pipeline_perf_if ();
     wire [`PERF_CTR_BITS-1:0] ifetch_latency;
     wire [`PERF_CTR_BITS-1:0] load_latency;
 
+    wire [`PERF_CTR_BITS-1:0] active_warps_count;
+    wire [`PERF_CTR_BITS-1:0] stalled_warps_count;
+
     modport schedule (
         output sched_idles,
         output sched_stalls,
-        output sched_active_warp_count,
-        output sched_stalled_warp_count 
+        output active_warps_count,
+        output stalled_warps_count        
     );
 
     modport issue (
@@ -46,8 +47,6 @@ interface VX_pipeline_perf_if ();
     modport slave (
         input sched_idles,
         input sched_stalls,
-        input sched_active_warp_count,
-        input sched_stalled_warp_count,
         input ibf_stalls,
         input scb_stalls,
         input units_uses,
@@ -56,7 +55,9 @@ interface VX_pipeline_perf_if ();
         input loads,
         input stores,
         input ifetch_latency,
-        input load_latency
+        input load_latency,
+        input active_warps_count,
+        input stalled_warps_count
     );
 
 endinterface

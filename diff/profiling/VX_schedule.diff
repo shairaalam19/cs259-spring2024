@@ -1,0 +1,38 @@
+diff --git a/profiling-2/VX_schedule.sv b/profiling-2/VX_schedule.sv
+index 36bdf9e..70b7fb1 100644
+--- a/profiling-2/VX_schedule.sv
++++ b/profiling-2/VX_schedule.sv
+@@ -391,21 +391,31 @@ module VX_schedule import VX_gpu_pkg::*; #(
+     reg [`PERF_CTR_BITS-1:0] perf_sched_idles;
+     reg [`PERF_CTR_BITS-1:0] perf_sched_stalls;
+ 
++    reg [`PERF_CTR_BITS-1:0] perf_active_warp_count;
++    reg [`PERF_CTR_BITS-1:0] perf_stalled_warp_count;
++
+     wire schedule_idle = ~schedule_valid;
+     wire schedule_stall = schedule_if.valid && ~schedule_if.ready;
+ 
+     always @(posedge clk) begin
+         if (reset) begin
+             perf_sched_idles  <= '0;
+-            perf_sched_stalls <= '0;            
++            perf_sched_stalls <= '0;
++            perf_active_warp_count <= '0;
++            perf_stalled_warp_count <= '0;      
+         end else begin
+             perf_sched_idles  <= perf_sched_idles + `PERF_CTR_BITS'(schedule_idle);
+             perf_sched_stalls <= perf_sched_stalls + `PERF_CTR_BITS'(schedule_stall);
++            perf_active_warp_count <= perf_active_warp_count + `PERF_CTR_BITS'($countones(active_warps));
++            perf_stalled_warp_count <= perf_stalled_warp_count + `PERF_CTR_BITS'($countones(stalled_warps));
+         end
+     end
+ 
+     assign perf_schedule_if.sched_idles = perf_sched_idles;
+-    assign perf_schedule_if.sched_stalls = perf_sched_stalls;    
++    assign perf_schedule_if.sched_stalls = perf_sched_stalls;
++    assign perf_schedule_if.sched_active_warp_count =  perf_active_warp_count;
++    assign perf_schedule_if.sched_stalled_warp_count =  perf_stalled_warp_count;
++
+ `endif
+ 
+ endmodule
