@@ -66,3 +66,23 @@ CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --w
 CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=4 --threads=4 --cores=1 --rebuild=1 >> ../results/Profiling/4x4.txt
 ```
 (Input Size: n=16384)
+```bash
+CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=4 --threads=4 --cores=1 --rebuild=1 >> profiling_basic.txt
+(Input Size: n=32)
+```
+```bash
+CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=4 --threads=4 --cores=1 --rebuild=1 >> profiling_4_4.txt
+(Input Size: n=16384)
+```
+```bash
+CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=8 --threads=8 --cores=1 --rebuild=1 >> profiling_8_8.txt
+(Input Size: n=16384)
+```
+```bash
+CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=16 --threads=16 --cores=1 --rebuild=1 >> profiling_16_16.txt
+(Input Size: n=16384)
+```
+```bash
+CONFIGS=-DISSUE_WIDTH=4 ./ci/blackbox.sh --driver=rtlsim --app=psum --perf=1 --warps=32 --threads=32 --cores=1 --rebuild=1 >> profiling_32_32.txt
+(Input Size: n=16384)
+```
