@@ -1,0 +1,158 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=2 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=2 -DNUM_WARPS=4 -DNUM_THREADS=4   -DPERF_ENABLE -DISSUE_WIDTH=1 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/rtlsim: ./psum  -n64
+Total number of points in input: 64
+Input Data
+0: value=57
+1: value=40
+2: value=6
+3: value=62
+4: value=42
+5: value=32
+6: value=1
+7: value=13
+8: value=15
+9: value=12
+10: value=27
+11: value=35
+12: value=0
+13: value=2
+14: value=1
+15: value=58
+16: value=33
+17: value=41
+18: value=5
+19: value=33
+20: value=34
+21: value=8
+22: value=3
+23: value=61
+24: value=24
+25: value=55
+26: value=24
+27: value=42
+28: value=32
+29: value=35
+30: value=42
+31: value=25
+32: value=12
+33: value=49
+34: value=24
+35: value=55
+36: value=17
+37: value=25
+38: value=4
+39: value=32
+40: value=37
+41: value=32
+42: value=3
+43: value=38
+44: value=34
+45: value=5
+46: value=33
+47: value=4
+48: value=46
+49: value=39
+50: value=37
+51: value=17
+52: value=47
+53: value=41
+54: value=15
+55: value=8
+56: value=32
+57: value=39
+58: value=50
+59: value=1
+60: value=11
+61: value=29
+62: value=26
+63: value=23
+Source buffer size: 256 bytes
+open device connection
+Device configuration [cores, warps, threads]: 2, 4, 4
+Total number of points in output: 32
+Reference Data
+0: value=97
+1: value=68
+2: value=74
+3: value=14
+4: value=27
+5: value=62
+6: value=2
+7: value=59
+8: value=74
+9: value=38
+10: value=42
+11: value=64
+12: value=79
+13: value=66
+14: value=67
+15: value=67
+16: value=61
+17: value=79
+18: value=42
+19: value=36
+20: value=69
+21: value=41
+22: value=39
+23: value=37
+24: value=85
+25: value=54
+26: value=88
+27: value=23
+28: value=71
+29: value=51
+30: value=40
+31: value=49
+Destination buffer size: 128 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0x140
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: core0: scheduler idle=19996 (89%)
+PERF: core0: scheduler stalls=4 (0%)
+PERF: core0: ibuffer stalls=635 (2%)
+PERF: core0: issue stalls=1851 (alu=41%, fpu=0%, lsu=58%, sfu=0%)
+PERF: core0: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core0: ifetches=2397
+PERF: core0: ifetch latency=7 cycles
+PERF: core0: loads=218
+PERF: core0: load latency=30 cycles
+PERF: core0: stores=1214
+PERF: core0: instrs=3947, cycles=22307, IPC=0.176940
+PERF: core1: scheduler idle=19990 (89%)
+PERF: core1: scheduler stalls=7 (0%)
+PERF: core1: ibuffer stalls=170 (0%)
+PERF: core1: issue stalls=1509 (alu=47%, fpu=0%, lsu=52%, sfu=0%)
+PERF: core1: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: core1: ifetches=2405
+PERF: core1: ifetch latency=7 cycles
+PERF: core1: loads=218
+PERF: core1: load latency=31 cycles
+PERF: core1: stores=1214
+PERF: core1: instrs=3955, cycles=22309, IPC=0.177283
+PERF: scheduler idle=39986 (89%)
+PERF: scheduler stalls=11 (0%)
+PERF: ibuffer stalls=805 (1%)
+PERF: issue stalls=3360 (alu=44%, fpu=0%, lsu=55%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=4802
+PERF: loads=436
+PERF: stores=2428
+PERF: ifetch latency=7 cycles
+PERF: load latency=31 cycles
+PERF: instrs=7902, cycles=22309, IPC=0.354207
+PASSED!
+make: Leaving directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'

@@ -1,0 +1,2 @@
+main.o: main.cpp \
+ /home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/include/vortex.h common.h

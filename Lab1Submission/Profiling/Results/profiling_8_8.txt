@@ -1,0 +1,41 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=8 -DNUM_THREADS=8   -DPERF_ENABLE -DISSUE_WIDTH=4
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=8 -DNUM_THREADS=8   -DPERF_ENABLE -DISSUE_WIDTH=4 make -C ./ci/../runtime/rtlsim
+running: make -C ./ci/../tests/regression/psum run-rtlsim
+make: Entering directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
+LD_LIBRARY_PATH=/home/vaishnavi/Desktop/GPU-Lab/vortex/runtime/rtlsim: ./psum  -n16384
+Total number of points in input: 16384
+Source buffer size: 65536 bytes
+open device connection
+Device configuration [cores, warps, threads]: 1, 8, 8
+Total number of points in output: 64
+Destination buffer size: 256 bytes
+upload program
+allocate device memory
+dev_src=0x40
+dev_dst=0x10040
+allocate staging buffer
+upload kernel argument
+upload source buffer
+clear destination buffer
+run tests
+start device
+wait for completion
+download destination buffer
+verify result
+cleanup
+PERF: scheduler idle=28424 (29%)
+PERF: scheduler stalls=54652 (56%)
+PERF: ibuffer stalls=44717 (46%)
+PERF: issue stalls=127741 (alu=12%, fpu=0%, lsu=87%, sfu=0%)
+PERF: sfu stalls=0 (scrs=0%, wctl=0%)
+PERF: ifetches=17654
+PERF: loads=17014
+PERF: stores=1602
+PERF: ifetch latency=12 cycles
+PERF: load latency=28 cycles
+PERF: active warp total=622406 
+PERF: stalled warp total=509208 
+PERF: warp_efficiency=0.181872
+PERF: instrs=124504, cycles=96347, IPC=1.292246
+PASSED!
+make: Leaving directory '/home/vaishnavi/Desktop/GPU-Lab/vortex/tests/regression/psum'
