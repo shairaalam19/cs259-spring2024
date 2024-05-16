@@ -1405,13 +1405,25 @@ void Emulator::execute(const Instr &instr, uint32_t wid, instr_trace_t *trace) {
         for (uint32_t t = thread_start; t < num_threads; ++t) {
           if (!warp.tmask.test(t))
             continue;
-          uint32_t a = rsdata[t][0].i;
-          uint32_t b = rsdata[t][1].i;
+          uint32_t a = rsdata[t][0].i; // rs1
+          uint32_t b = rsdata[t][1].i; // rs2
 
           // TODO:
-          int c = ?
+          // int c = ?
 
-          rddata[t].i = c;
+          // rddata[t].i = c;
+
+          {
+            auto a0 = (a >> 0) & 0xff;
+            auto a1 = (a >> 8) & 0xff;
+            auto a2 = (a >> 16) & 0xff;
+            auto a3 = (a >> 24) & 0xff;
+            auto b0 = (b >> 0) & 0xff;
+            auto b1 = (b >> 8) & 0xff;
+            auto b2 = (b >> 16) & 0xff;
+            auto b3 = (b >> 24) & 0xff;
+            rddata[t].i = (a0 * b0) + (a1 * b1) + (a2 * b2) + (a3 * b3);
+          }
         }
         rd_write = true;
       } break;

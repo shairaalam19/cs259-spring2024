@@ -105,7 +105,7 @@ module VX_alu_dot8 #(
 
         // TODO:
 
-        wire [31:0] c = ?
+        wire [31:0] c = (a[7:0] * b[7:0]) + (a[15:8] * b[15:8]) + (a[23:16] * b[23:16]) + (a[31:24] * b[31:24]);
 
         wire [31:0] result;
         `BUFFER_EX(result, c, pe_enable, LATENCY_DOT8);
