@@ -78,7 +78,7 @@ private:
 	struct pending_req_t {
 		instr_trace_t* trace;
 		uint32_t count;
-	};
+	}; 
 
 	struct lsu_state_t {		
 		HashTable<pending_req_t> pending_rd_reqs;

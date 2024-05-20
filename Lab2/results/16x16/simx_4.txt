@@ -1,0 +1,29 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=4 -DNUM_WARPS=16 -DNUM_THREADS=16    
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=4 -DNUM_WARPS=16 -DNUM_THREADS=16     make -C ./ci/../runtime/simx
+running: OPTS=-n128 make -C ./ci/../tests/regression/sgemm8 run-simx
+make: Entering directory '/vortex/build/tests/regression/sgemm8'
+LD_LIBRARY_PATH=/vortex/build/runtime/simx: ./sgemm8 -n128
+open device connection
+data type: int8
+matrix size: 128x128
+allocate device memory
+A_addr=0x40
+B_addr=0x4040
+C_addr=0x8040
+upload matrix A buffer
+upload matrix B buffer
+upload program
+upload kernel argument
+start device
+wait for completion
+PERF: core0: instrs=2787612, cycles=756154, IPC=3.686567
+PERF: core1: instrs=2787613, cycles=756199, IPC=3.686348
+PERF: core2: instrs=2787613, cycles=755079, IPC=3.691816
+PERF: core3: instrs=2787613, cycles=754984, IPC=3.692281
+PERF: instrs=11150451, cycles=756199, IPC=14.745393
+Elapsed time: 10077 ms
+download destination buffer
+verify result
+cleanup
+PASSED!
+make: Leaving directory '/vortex/build/tests/regression/sgemm8'
