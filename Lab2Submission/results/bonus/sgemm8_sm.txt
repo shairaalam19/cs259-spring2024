@@ -1,0 +1,30 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16    
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16     make -C ./ci/../runtime/rtlsim
+running: OPTS=-n64 make -C ./ci/../tests/regression/sgemm8_sm run-rtlsim
+make: Entering directory '/vortex/build/tests/regression/sgemm8_sm'
+LD_LIBRARY_PATH=/vortex/build/runtime/rtlsim: ./sgemm8_sm -n64
+open device connection
+data type: integer
+matrix size: 64x64
+tile size: 4x4
+group size: 16
+number of groups: 256
+local memory: 32 bytes
+allocate device memory
+local_addr=0xff000000
+A_addr=0x40
+B_addr=0x1040
+C_addr=0x2040
+allocate host buffers
+upload source buffer0
+upload source buffer1
+upload program
+upload kernel argument
+start device
+wait for completion
+PERF: instrs=-4995072469926809587, cycles=-4995072469926809587, IPC=1.000000
+download destination buffer
+verify result
+cleanup
+PASSED!
+make: Leaving directory '/vortex/build/tests/regression/sgemm8_sm'

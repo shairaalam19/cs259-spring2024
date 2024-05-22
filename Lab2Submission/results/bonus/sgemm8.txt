@@ -1,0 +1,25 @@
+CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16    
+running: CONFIGS=-DNUM_CLUSTERS=1 -DNUM_CORES=1 -DNUM_WARPS=16 -DNUM_THREADS=16     make -C ./ci/../runtime/rtlsim
+running: OPTS=-n64 make -C ./ci/../tests/regression/sgemm8 run-rtlsim
+make: Entering directory '/vortex/build/tests/regression/sgemm8'
+LD_LIBRARY_PATH=/vortex/build/runtime/rtlsim: ./sgemm8 -n64
+open device connection
+data type: int8
+matrix size: 64x64
+allocate device memory
+A_addr=0x40
+B_addr=0x1040
+C_addr=0x2040
+upload matrix A buffer
+upload matrix B buffer
+upload program
+upload kernel argument
+start device
+wait for completion
+PERF: instrs=1456696, cycles=1291004, IPC=1.128343
+Elapsed time: 43714 ms
+download destination buffer
+verify result
+cleanup
+PASSED!
+make: Leaving directory '/vortex/build/tests/regression/sgemm8'
