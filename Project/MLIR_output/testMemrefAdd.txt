@@ -1,0 +1,6 @@
+module {
+  func.func @vadd(%arg0: memref<1024xf32>, %arg1: memref<1024xf32>, %arg2: memref<1024xf32>) {
+    linalg.elemwise_binary {cast = #linalg.type_fn<cast_signed>, fun = #linalg.binary_fn<add>} ins(%arg0, %arg1 : memref<1024xf32>, memref<1024xf32>) outs(%arg2 : memref<1024xf32>)
+    return
+  }
+}
